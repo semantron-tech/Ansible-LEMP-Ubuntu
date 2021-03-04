@@ -1,0 +1,36 @@
+---
+- name: "Installing LEMP"
+  hosts: ubuntu
+  tasks:
+
+    - name: "Installing LEMP packages"
+      become: true
+      apt:
+        name:
+          - nginx
+          - php
+          - php-mysql
+        state: present
+
+    - name: "move inedx.html"
+      become: true
+      command: mv /var/www/html/index.html /var/www/html/index.html.bak
+
+    - name: "copy the file"
+      become: true
+      copy:
+        src: ./website/
+        dest: /var/www/html/
+
+    - name: "stop apache2"
+      become: true
+      service:
+        name: apache2
+        state: stopped
+
+    - name: "restaring services"
+      become: true
+      service:
+        name: nginx
+        state: restarted
+        enabled: true
