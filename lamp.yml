@@ -1,0 +1,41 @@
+---
+- name: "Installing Lamp Packages"
+  hosts: centos
+  tasks: 
+
+    - name: "installing lamp packages"
+      become: true
+      yum:
+        name:
+          - httpd
+          - php
+          - php-mysql
+          - mariadb-server
+        state: present
+        
+
+    - name: "Creating index.html"
+      become: true
+      copy:
+        content: "<h1><center>This is Ansible Index Page</center></h1>"
+        dest: "/var/www/html/index.html"
+
+    - name: "creating index.php"
+      become: true
+      copy:
+        content: "<?php phpinfo(); ?>"
+        dest: "/var/www/html/index.php"
+
+    - name: "Restarting/Enabling Apache Webserver"   
+      become: true
+      service:
+        name: httpd
+        state: restarted
+        enabled: true
+
+    - name: "Restarting/Enabling Mariadb"
+      become: true
+      service:
+        name: mariadb
+        state: restarted
+        enabled: true
